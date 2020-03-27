@@ -57,7 +57,10 @@ class Block {
      * Method to calculate the block hash
      */
     calculateBlockHash() {
-        return SHA256(this.height + this.time + this.previousBlockHash + this.body).toString()
+        return SHA256(  this.height +
+                        this.time +
+                        this.previousBlockHash +
+                        this.body   ).toString()
     }
 
     /**
