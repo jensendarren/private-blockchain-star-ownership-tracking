@@ -19,7 +19,7 @@ class Block {
 		this.hash = null;                                           // Hash of the block
 		this.height = 0;                                            // Block Height (consecutive number of each block)
 		this.body = Buffer(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
-		this.time = 0;                                            // Timestamp for the Block creation
+		this.time = 0;                                              // Timestamp for the Block creation
         this.previousBlockHash = null;                              // Reference to the previous Block Hash
     }
 
@@ -39,14 +39,25 @@ class Block {
         let self = this;
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
-
+            let currentHash = self.hash
             // Recalculate the hash of the Block
+            let recalculatedHash = self.calculateBlockHash()
             // Comparing if the hashes changed
-            // Returning the Block is not valid
-
-            // Returning the Block is valid
-            resolve(true)
+            if (currentHash != recalculatedHash) {
+                // Returning the Block is not valid
+                resolve(false)
+            } else {
+                // Returning the Block is valid
+                resolve(true)
+            }
         });
+    }
+
+    /**
+     * Method to calculate the block hash
+     */
+    calculateBlockHash() {
+        return SHA256(this.height + this.time + this.previousBlockHash + this.body).toString()
     }
 
     /**
