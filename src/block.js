@@ -18,7 +18,7 @@ class Block {
 	constructor(data){
 		this.hash = null;                                           // Hash of the block
 		this.height = 0;                                            // Block Height (consecutive number of each block)
-		this.body = Buffer(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
+		this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
 		this.time = 0;                                              // Timestamp for the Block creation
         this.previousBlockHash = null;                              // Reference to the previous Block Hash
     }
@@ -73,14 +73,22 @@ class Block {
      *     or Reject with an error.
      */
     getBData() {
-        // Getting the encoded data saved in the Block
-        // Decoding the data to retrieve the JSON representation of the object
-        // Parse the data to an object to be retrieve.
-
-        // Resolve with the data if the object isn't the Genesis block
-
+        let self = this
+        return new Promise((resolve, reject) => {
+            // Getting the encoded data saved in the Block
+            let encoded = self.body
+            // Decoding the data to retrieve the JSON representation of the object
+            let decoded = hex2ascii(encoded)
+            // Parse the data to an object to be retrieve.
+            let obj = JSON.parse(decoded)
+            // Resolve with the data if the object isn't the Genesis block
+            if (self.height > 0) {
+                resolve(obj)
+            } else {
+                resolve(null)
+            }
+        })
     }
-
 }
 
 module.exports.Block = Block;                    // Exposing the Block class as a module
