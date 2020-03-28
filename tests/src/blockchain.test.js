@@ -13,6 +13,18 @@ describe('Blockchain Class', () => {
   it('should have a chain with the genesis block', () => {
     expect(blockchain.chain).toStrictEqual([genesisBlock])
   })
+  describe('requestMessageOwnershipVerification()', () => {
+    it('returns a message to be singed', async () => {
+      // Set the date to a fixed timestamp
+      MockDate.set(1585394314)
+      address = "tb1qa4ut0qq2ffqlxfagtpv24a2gjvggcrmcfhk9g2"
+      message = await blockchain.requestMessageOwnershipVerification(address)
+      timestamp = new Date().getTime().toString().slice(0, -3)
+      expectedMessage = `${address}:${timestamp}:starRegistry`
+      expect(message).toBe(expectedMessage)
+      MockDate.reset()
+    })
+  })
   describe('_addBlock()', () => {
     beforeEach(async () => {
       block = new BlockClass.Block({data: 'New block'})
