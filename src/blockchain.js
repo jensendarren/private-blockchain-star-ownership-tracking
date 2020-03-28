@@ -127,9 +127,23 @@ class Blockchain {
      * @param {*} star
      */
     submitStar(address, message, signature, star) {
-        let self = this;
         return new Promise(async (resolve, reject) => {
-
+            // Get the time from the message sent as a parameter example:
+            let messageTimestmp = parseInt(message.split(':')[1])
+            // Get the current timestamp
+            let currentTimestamp = parseInt(new Date().getTime().toString().slice(0, -3));
+            // Check if the time elapsed is less than 5 minutes
+            let timestampValid = ((currentTimestamp - messageTimestmp) < 360)
+            // Check the validity of the signature
+            let signatureValid = bitcoinMessage.verify(message, address, signature)
+            // If valid then add block otherwise reject
+            if (signatureValid && timestampValid) {
+                let block = new BlockClass.Block({data: star})
+                let newBlock = await this._addBlock(block)
+                resolve(newBlock)
+            } else {
+                reject("Message signature and/or timestamp is not valid. Try again!")
+            }
         });
     }
 

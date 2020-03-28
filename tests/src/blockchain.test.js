@@ -25,6 +25,38 @@ describe('Blockchain Class', () => {
       MockDate.reset()
     })
   })
+  describe('submitStar()', () => {
+    beforeEach(() => {
+      MockDate.set(1585394314)
+      address = "mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz"
+      message = `${address}:1585394:starRegistry`
+      signature = 'IF2OMG/NA3y62aeavy+N9lh8eFblErRh6n6SIDDfEO7BDdo0KVonUh6vWppQ+2jQM6lrPsLwDz4vDMbo70f0YdY='
+      star = {data: "A new star is born!"}
+    })
+    afterEach(() => {
+      MockDate.reset()
+    })
+    describe('valid requests', () => {
+      it('returns the block that was added to the blockchain', async () => {
+        newBlock = await blockchain.submitStar(address, message, signature, star)
+      })
+    })
+    describe('for invalid requests', () => {
+      it('when signature does not match address it rejects and returns an error', () => {
+        badSignature = 'IEypB5E2P9D2mPCOk7VM/y2mHQbXE1pA8Bc8hEvGbkz8NlFOOeHALDsbhKcw1vBy62YyKR+6Q7V1fFSbIoL/BDM='
+        blockchain.submitStar(address, message, badSignature, star).catch(error => {
+          expect(error.toString()).toBe("Message signature and/or timestamp is not valid. Try again!")
+        })
+      })
+      it('when the elapsed time is > 5 mins it rejects and returns an error', () => {
+        // Reset the date to the current time which will be more than 5 minutes from the message timestamp
+        MockDate.reset()
+        blockchain.submitStar(address, message, signature, star).catch(error => {
+          expect(error.toString()).toBe("Message signature and/or timestamp is not valid. Try again!")
+        })
+      })
+    })
+  })
   describe('_addBlock()', () => {
     beforeEach(async () => {
       block = new BlockClass.Block({data: 'New block'})
@@ -55,8 +87,8 @@ describe('Blockchain Class', () => {
       expect(block.previousBlockHash).toBe(genesisBlock.hash)
     })
     describe('when there is an error adding new block', () => {
-      it('promise is rejected and returns an error object', async () => {
-        await blockchain._addBlock(null).catch(error => {
+      it('promise is rejected and returns an error object', () => {
+        blockchain._addBlock(null).catch(error => {
           expect(error.toString()).toBe("TypeError: Cannot set property 'height' of null")
         })
       })
