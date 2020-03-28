@@ -47,7 +47,12 @@ class Blockchain {
         return new Promise((resolve, reject) => {
             resolve(this.height);
         });
-   }
+    }
+
+    // getLatest block method
+    getLatestBlock(){
+        return this.chain[this.chain.length -1];
+    }
 
     /**
      * _addBlock(block) will store a block in the chain
@@ -56,14 +61,35 @@ class Blockchain {
      * or reject if an error happen during the execution.
      * You will need to check for the height to assign the `previousBlockHash`,
      * assign the `timestamp` and the correct `height`...At the end you need to
-     * create the `block hash` and push the block into the chain array. Don't for get
+     * create the `block hash` and `push the block into the chain array. Don't for get
      * to update the `this.height`
      * Note: the symbol `_` in the method name indicates in the javascript convention
      * that this method is a private method.
      */
     _addBlock(block) {
-        let self = this;
-        return new Promise(async (resolve, reject) => {
+        // TODO confirm that the block parameter is of the correct type Block
+        return new Promise((resolve, reject) => {
+            try {
+                // Set the block height to be the current blockchain height + 1
+                block.height = this.height + 1
+                // Set the block timestamp to be the UTC timestamp
+                block.time = new Date().getTime().toString().slice(0,-3);
+                // Sets the previous block hash
+                if (this.chain.length > 0) {
+                    block.previousBlockHash = this.getLatestBlock().hash
+                }
+                // Set the block hash
+                block.hash = block.calculateBlockHash()
+                // Push the new block onto the chain
+                this.chain.push(block)
+                // Increment the blockchain height by 1
+                this.height += 1
+                // Resolve the promise with the new block
+                resolve(block)
+            } catch(error) {
+                // Reject due to an error
+                reject(error)
+            }
         });
    }
 

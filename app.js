@@ -48,13 +48,6 @@ class ApplicationServer {
         require("./BlockchainController.js")(this.app, this.blockchain);
 	}
 
-	// start() {
-	// 	let self = this;
-	// 	this.app.listen(this.app.get("port"), () => {
-	// 		console.log(`Server Listening for port: ${self.app.get("port")}`);
-	// 	});
-	// }
-
 }
 
 module.exports = new ApplicationServer().app;
