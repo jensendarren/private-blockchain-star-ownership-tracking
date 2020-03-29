@@ -107,11 +107,17 @@ describe('Blockchain Class', () => {
           expect(error.toString()).toBe("Message signature and/or timestamp is not valid. Try again!")
         })
       })
-      it('when the elapsed time is > 5 mins it rejects and returns an error', () => {
+      it('when the elapsed time is > 5 mins since signing the message then it rejects and returns an error', () => {
         // Reset the date to the current time which will be more than 5 minutes from the message timestamp
         MockDate.reset()
         blockchain.submitStar(address, message, signature, star).catch(error => {
           expect(error.toString()).toBe("Message signature and/or timestamp is not valid. Try again!")
+        })
+      })
+      it('wnen the signature is of an invalid length', () => {
+        malformedSignature = 'thisisnotvalid'
+        blockchain.submitStar(address, message, malformedSignature, star).catch(error => {
+          expect(error.toString()).toBe("Error: Invalid signature length")
         })
       })
     })

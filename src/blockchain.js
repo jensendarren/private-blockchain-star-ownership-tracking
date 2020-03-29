@@ -128,22 +128,26 @@ class Blockchain {
      */
     submitStar(address, message, signature, star) {
         return new Promise(async (resolve, reject) => {
-            // Get the time from the message sent as a parameter example:
-            let messageTimestmp = parseInt(message.split(':')[1])
-            // Get the current timestamp
-            let currentTimestamp = parseInt(new Date().getTime().toString().slice(0, -3));
-            // Check if the time elapsed is less than 5 minutes (60 * 5 = 300 seconds)
-            let timestampValid = ((currentTimestamp - messageTimestmp) < 300)
-            // Check the validity of the signature
-            let signatureValid = bitcoinMessage.verify(message, address, signature)
-            // If valid then add block otherwise reject
-            if (signatureValid && timestampValid) {
-                let block = new BlockClass.Block({star: star})
-                block.owner = address
-                let newBlock = await this._addBlock(block)
-                resolve(newBlock)
-            } else {
-                reject("Message signature and/or timestamp is not valid. Try again!")
+            try {
+                // Get the time from the message sent as a parameter example:
+                let messageTimestmp = parseInt(message.split(':')[1])
+                // Get the current timestamp
+                let currentTimestamp = parseInt(new Date().getTime().toString().slice(0, -3));
+                // Check if the time elapsed is less than 5 minutes (60 * 5 = 300 seconds)
+                let timestampValid = ((currentTimestamp - messageTimestmp) < 300)
+                // Check the validity of the signature
+                let signatureValid = bitcoinMessage.verify(message, address, signature)
+                // If valid then add block otherwise reject
+                if (signatureValid && timestampValid) {
+                    let block = new BlockClass.Block({star: star})
+                    block.owner = address
+                    let newBlock = await this._addBlock(block)
+                    resolve(newBlock)
+                } else {
+                    reject("Message signature and/or timestamp is not valid. Try again!")
+                }
+            } catch (error) {
+                reject(error)
             }
         });
     }

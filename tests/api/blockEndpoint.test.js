@@ -6,6 +6,13 @@ const request = require('supertest')
 const server = require('../../app')
 const BlockClass = require('../../src/block')
 const address = "mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz"
+const message = `${address}:1585394:starRegistry`
+const signature = 'IF2OMG/NA3y62aeavy+N9lh8eFblErRh6n6SIDDfEO7BDdo0KVonUh6vWppQ+2jQM6lrPsLwDz4vDMbo70f0YdY='
+const star = {star: {
+  "dec": "68° 52' 56.9",
+  "ra": "16h 29m 1.0s",
+  "story": "Testing the story 4"
+}}
 
 describe('Block API Endpoints', () => {
   checkResHeadersAndStatus = (res) => {
@@ -43,11 +50,7 @@ describe('Block API Endpoints', () => {
   })
   describe('GET /blocks/:address', () => {
     createStarBlock = () => {
-      block = new BlockClass.Block({star: {
-        "dec": "68° 52' 56.9",
-        "ra": "16h 29m 1.0s",
-        "story": "Testing the story 4"
-      }})
+      block = new BlockClass.Block(star)
       block.owner = address
       return block
     }
@@ -81,5 +84,28 @@ describe('Block API Endpoints', () => {
     })
   })
   describe('POST /submitstar', () => {
+    it('returns a new block containing the star data', async () => {
+      MockDate.set(1585394314)
+      const res = await request(server.app).post('/submitstar').send({
+        address: address,
+        message: message,
+        star: star,
+        signature: signature
+      })
+      let block = res.body
+      expect(block.owner).toBe(address)
+      expect(block.body).toBe("7b2273746172223a7b2273746172223a7b22646563223a223638c2b0203532272035362e39222c227261223a223136682032396d20312e3073222c2273746f7279223a2254657374696e67207468652073746f72792034227d7d7d")
+      MockDate.reset()
+    })
+    it('returns a 500 error if the signature or timestamp is non valid', async () => {
+      const res = await request(server.app).post('/submitstar').send({
+        address: address,
+        message: message,
+        star: star,
+        signature: signature
+      })
+      expect(res.status).toBe(500)
+      expect(res.error.text).toBe("Message signature and/or timestamp is not valid. Try again!")
+    })
   })
 })
