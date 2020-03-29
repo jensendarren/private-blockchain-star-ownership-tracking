@@ -13,6 +13,16 @@ describe('Blockchain Class', () => {
   it('should have a chain with the genesis block', () => {
     expect(blockchain.chain).toStrictEqual([genesisBlock])
   })
+  describe('getBlockByHash()', () => {
+    it('returns the block corresponding to a block hash', async () => {
+      let block = await blockchain.getBlockByHash(genesisBlock.hash)
+      expect(block).toBe(genesisBlock)
+    })
+    it('returns undefined when there is no block with a matching hash', async () => {
+      let block = await blockchain.getBlockByHash("ahashnotonthechain")
+      expect(block).toBeUndefined()
+    })
+  })
   describe('requestMessageOwnershipVerification()', () => {
     it('returns a message to be singed', async () => {
       // Set the date to a fixed timestamp

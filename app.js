@@ -45,9 +45,9 @@ class ApplicationServer {
 	}
 
 	initControllers() {
-        require("./BlockchainController.js")(this.app, this.blockchain);
+  	require("./BlockchainController.js")(this.app, this.blockchain);
 	}
 
 }
 
-module.exports = new ApplicationServer().app;
+module.exports = new ApplicationServer();
