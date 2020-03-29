@@ -203,17 +203,25 @@ class Blockchain {
     /**
      * This method will return a Promise that will resolve with the list of errors when validating the chain.
      * Steps to validate:
-     * 1. You should validate each block using `validateBlock`
+     * 1. You should validate each block using `block.validate()`
      * 2. Each Block should check the with the previousBlockHash
      */
     validateChain() {
-        let self = this;
         let errorLog = [];
-        return new Promise(async (resolve, reject) => {
-
+        return new Promise((resolve, reject) => {
+            this.chain.forEach(async block => {
+                let isBlockValid = await block.validate()
+                let prevBlockHeight = block.height -1
+                if(!isBlockValid) {
+                    errorLog.push(`Block ${block.height} is not valid.`)
+                }
+                if(block.height > 0 && (block.previousBlockHash != this.chain[prevBlockHeight].hash)) {
+                    errorLog.push(`Block ${block.height} does not link to Block ${prevBlockHeight}.`)
+                }
+                resolve(errorLog)
+            })
         });
     }
-
 }
 
 module.exports.Blockchain = Blockchain;

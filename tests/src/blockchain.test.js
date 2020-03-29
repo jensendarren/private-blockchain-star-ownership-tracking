@@ -10,6 +10,11 @@ const star = {star: {
   "ra": "16h 29m 1.0s",
   "story": "Testing the story 4"
 }}
+const createStarBlock = () => {
+  block = new BlockClass.Block(star)
+  block.owner = address
+  return block
+}
 
 describe('Blockchain Class', () => {
   beforeEach(async () => {
@@ -19,12 +24,30 @@ describe('Blockchain Class', () => {
   it('should have a chain with the genesis block', () => {
     expect(blockchain.chain).toStrictEqual([genesisBlock])
   })
+  describe('validateChain()', () => {
+    it('should return empty error log for a valid chain', async () => {
+      let errorLog = await blockchain.validateChain()
+      expect(errorLog).toStrictEqual([])
+    })
+    describe('when a block in the chain is not valid', () => {
+      it('should return an error log if a blocks data has been tampered', async () => {
+        genesisBlock.body = "letstamperwiththisblock"
+        let errorLog = await blockchain.validateChain()
+        expect(errorLog).toStrictEqual(['Block 0 is not valid.'])
+      })
+      it('should return an error log if a blocks data has been tampered', async () => {
+        await blockchain._addBlock(createStarBlock())
+        await blockchain._addBlock(createStarBlock())
+        let block3 = await blockchain._addBlock(createStarBlock())
+        // Tamper with block3 previousBlockHash value and update its own hash value
+        block3.previousBlockHash = "rubbish!"
+        block3.hash = block3.calculateBlockHash()
+        let errorLog = await blockchain.validateChain()
+        expect(errorLog).toStrictEqual(['Block 3 does not link to Block 2.'])
+      })
+    })
+  })
   describe('getStarsByWalletAddress(address)', () => {
-    createStarBlock = () => {
-      block = new BlockClass.Block(star)
-      block.owner = address
-      return block
-    }
     it('returns all decoded stars data for that owner', async () => {
       await blockchain._addBlock(createStarBlock())
       await blockchain._addBlock(createStarBlock())
