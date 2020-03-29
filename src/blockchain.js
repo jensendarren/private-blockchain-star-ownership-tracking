@@ -49,7 +49,9 @@ class Blockchain {
         });
     }
 
-    // getLatest block method
+    /**
+     * Method for returning the lastest block on the blockchain
+     */
     getLatestBlock(){
         return this.chain[this.chain.length -1];
     }
@@ -67,7 +69,6 @@ class Blockchain {
      * that this method is a private method.
      */
     _addBlock(block) {
-        // TODO confirm that the block parameter is of the correct type Block
         return new Promise((resolve, reject) => {
             try {
                 // Set the block height to be the current blockchain height + 1
@@ -160,8 +161,12 @@ class Blockchain {
      */
     getBlockByHash(hash) {
         return new Promise((resolve, reject) => {
-            let block = this.chain.filter(block => block.hash == hash)[0];
-            resolve(block)
+            let block = this.chain.filter(block => block.hash === hash)[0];
+            if(block) {
+                resolve(block)
+            } else {
+                resolve(null)
+            }
         });
     }
 
@@ -171,9 +176,8 @@ class Blockchain {
      * @param {*} height
      */
     getBlockByHeight(height) {
-        let self = this;
         return new Promise((resolve, reject) => {
-            let block = self.chain.filter(p => p.height === height)[0];
+            let block = this.chain.filter(block => block.height === height)[0];
             if(block){
                 resolve(block);
             } else {

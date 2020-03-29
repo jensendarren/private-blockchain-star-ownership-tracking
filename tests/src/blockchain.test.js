@@ -70,7 +70,7 @@ describe('Blockchain Class', () => {
     })
     it('returns undefined when there is no block with a matching hash', async () => {
       let block = await blockchain.getBlockByHash("ahashnotonthechain")
-      expect(block).toBeUndefined()
+      expect(block).toBeNull()
     })
   })
   describe('requestMessageOwnershipVerification()', () => {
