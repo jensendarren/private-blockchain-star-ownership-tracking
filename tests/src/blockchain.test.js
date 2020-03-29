@@ -4,6 +4,12 @@ var MockDate = require('mockdate');
 // Require project classes
 const BlockchainClass = require('../../src/blockchain')
 const BlockClass = require('../../src/block')
+const address = "mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz"
+const star = {star: {
+  "dec": "68° 52' 56.9",
+  "ra": "16h 29m 1.0s",
+  "story": "Testing the story 4"
+}}
 
 describe('Blockchain Class', () => {
   beforeEach(async () => {
@@ -12,6 +18,27 @@ describe('Blockchain Class', () => {
   })
   it('should have a chain with the genesis block', () => {
     expect(blockchain.chain).toStrictEqual([genesisBlock])
+  })
+  describe('getStarsByWalletAddress(address)', () => {
+    createStarBlock = () => {
+      block = new BlockClass.Block(star)
+      block.owner = address
+      return block
+    }
+    it('returns all decoded stars data for that owner', async () => {
+      await blockchain._addBlock(createStarBlock())
+      await blockchain._addBlock(createStarBlock())
+      let stars = await blockchain.getStarsByWalletAddress(address)
+      expect(blockchain.chain.length).toBe(3)
+      expect(stars.length).toBe(2)
+      expect(stars[0].owner).toBe(address)
+      expect(stars[1].owner).toBe(address)
+      expect(stars[0].star).toStrictEqual({
+        "dec": "68Â° 52' 56.9",
+        "ra": "16h 29m 1.0s",
+        "story": "Testing the story 4"
+      })
+    })
   })
   describe('getBlockByHash()', () => {
     it('returns the block corresponding to a block hash', async () => {
@@ -27,7 +54,6 @@ describe('Blockchain Class', () => {
     it('returns a message to be singed', async () => {
       // Set the date to a fixed timestamp
       MockDate.set(1585394314)
-      address = "tb1qa4ut0qq2ffqlxfagtpv24a2gjvggcrmcfhk9g2"
       message = await blockchain.requestMessageOwnershipVerification(address)
       timestamp = new Date().getTime().toString().slice(0, -3)
       expectedMessage = `${address}:${timestamp}:starRegistry`
@@ -38,17 +64,17 @@ describe('Blockchain Class', () => {
   describe('submitStar()', () => {
     beforeEach(() => {
       MockDate.set(1585394314)
-      address = "mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz"
       message = `${address}:1585394:starRegistry`
       signature = 'IF2OMG/NA3y62aeavy+N9lh8eFblErRh6n6SIDDfEO7BDdo0KVonUh6vWppQ+2jQM6lrPsLwDz4vDMbo70f0YdY='
-      star = {data: "A new star is born!"}
     })
     afterEach(() => {
       MockDate.reset()
     })
     describe('valid requests', () => {
-      it('returns the block that was added to the blockchain', async () => {
+      it('returns the block that was added to the blockchain with owner set to the address', async () => {
         newBlock = await blockchain.submitStar(address, message, signature, star)
+        expect(newBlock.owner).toBe(address)
+        expect(newBlock.body).toBe("7b2264617461223a7b2273746172223a7b22646563223a223638c2b0203532272035362e39222c227261223a223136682032396d20312e3073222c2273746f7279223a2254657374696e67207468652073746f72792034227d7d7d")
       })
     })
     describe('for invalid requests', () => {

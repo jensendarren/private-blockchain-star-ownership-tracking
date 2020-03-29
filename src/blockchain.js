@@ -139,6 +139,7 @@ class Blockchain {
             // If valid then add block otherwise reject
             if (signatureValid && timestampValid) {
                 let block = new BlockClass.Block({data: star})
+                block.owner = address
                 let newBlock = await this._addBlock(block)
                 resolve(newBlock)
             } else {
@@ -184,10 +185,18 @@ class Blockchain {
      * @param {*} address
      */
     getStarsByWalletAddress (address) {
-        let self = this;
-        let stars = [];
         return new Promise((resolve, reject) => {
-
+            // Get all blocks with owner matching the address
+            let blocks = this.chain.filter(block => block.owner === address)
+            // Call getBData() on all the blocks to get an array of promises
+            let starPromises = blocks.map(star => star.getBData())
+            // Resolve all promises
+            Promise.all(starPromises).then(stars => {
+                // Add the owner property to each star setting to the address
+                stars.map(star => star.owner = address)
+                // Resolve the stars array
+                resolve(stars)
+            })
         });
     }
 
