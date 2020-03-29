@@ -1,5 +1,5 @@
 // Require external libraries
-var MockDate = require('mockdate');
+const MockDate = require('mockdate');
 
 // Require project classes
 const BlockchainClass = require('../../src/blockchain')
@@ -97,7 +97,7 @@ describe('Blockchain Class', () => {
       it('returns the block that was added to the blockchain with owner set to the address', async () => {
         newBlock = await blockchain.submitStar(address, message, signature, star)
         expect(newBlock.owner).toBe(address)
-        expect(newBlock.body).toBe("7b2264617461223a7b2273746172223a7b22646563223a223638c2b0203532272035362e39222c227261223a223136682032396d20312e3073222c2273746f7279223a2254657374696e67207468652073746f72792034227d7d7d")
+        expect(newBlock.body).toBe("7b2273746172223a7b2273746172223a7b22646563223a223638c2b0203532272035362e39222c227261223a223136682032396d20312e3073222c2273746f7279223a2254657374696e67207468652073746f72792034227d7d7d")
       })
     })
     describe('for invalid requests', () => {

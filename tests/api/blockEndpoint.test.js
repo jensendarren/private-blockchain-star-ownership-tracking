@@ -1,4 +1,8 @@
+// Require external libraries
+const MockDate = require('mockdate');
 const request = require('supertest')
+
+// Require project classes
 const server = require('../../app')
 const BlockClass = require('../../src/block')
 const address = "mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz"
@@ -65,6 +69,15 @@ describe('Block API Endpoints', () => {
       const res = await request(server.app).get(`/blocks/anaddresswithnostars`)
       let stars = res.body
       expect(stars).toStrictEqual([])
+    })
+  })
+  describe('POST /requestValidation', () => {
+    it('returns a message to be signed', async () => {
+      MockDate.set(1585458878000)
+      const res = await request(server.app).post('/requestValidation').send({address: address})
+      let message = res.body
+      expect(message).toBe('mmaPCpKEfyNrbED6KtrtX64rn8fm4GWTyz:1585458878:starRegistry')
+      MockDate.reset()
     })
   })
   describe('POST /submitstar', () => {
