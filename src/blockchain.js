@@ -79,8 +79,8 @@ class Blockchain {
                 if (this.chain.length > 0) {
                     block.previousBlockHash = this.getLatestBlock().hash
                 }
-                // Set the block hash
-                block.hash = block.calculateBlockHash()
+                // Calculate the block hash
+                block.calculateBlockHash()
                 // Push the new block onto the chain
                 this.chain.push(block)
                 // Increment the blockchain height by 1

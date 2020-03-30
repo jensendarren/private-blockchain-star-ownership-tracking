@@ -19,7 +19,8 @@ class Block {
 		this.hash = null;                                           // Hash of the block
 		this.height = 0;                                            // Block Height (consecutive number of each block)
 		this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
-		this.time = 0;                                              // Timestamp for the Block creation
+        this.time = 0;                                              // Timestamp for the Block creation
+        this.owner = null;                                          // Reference to the wallet address of the owner
         this.previousBlockHash = null;                              // Reference to the previous Block Hash
     }
 
@@ -40,9 +41,9 @@ class Block {
             // Save in auxiliary variable the current block hash
             let currentHash = this.hash
             // Recalculate the hash of the Block
-            let recalculatedHash = this.calculateBlockHash()
+            this.calculateBlockHash()
             // Comparing if the hashes changed
-            if (currentHash != recalculatedHash) {
+            if (currentHash != this.hash) {
                 // Returning the Block is not valid
                 resolve(false)
             } else {
@@ -56,9 +57,10 @@ class Block {
      * Method to calculate the block hash
      */
     calculateBlockHash() {
-        return SHA256(  this.height +
+        this.hash = SHA256(  this.height +
                         this.time +
                         this.previousBlockHash +
+                        this.owner +
                         this.body   ).toString()
     }
 

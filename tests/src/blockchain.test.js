@@ -41,7 +41,7 @@ describe('Blockchain Class', () => {
         let block3 = await blockchain._addBlock(createStarBlock())
         // Tamper with block3 previousBlockHash value and update its own hash value
         block3.previousBlockHash = "rubbish!"
-        block3.hash = block3.calculateBlockHash()
+        block3.calculateBlockHash()
         let errorLog = await blockchain.validateChain()
         expect(errorLog).toStrictEqual(['Block 3 does not link to Block 2.'])
       })

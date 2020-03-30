@@ -21,7 +21,7 @@ describe('Block', () => {
   describe('validate()', () => {
     beforeEach(() => {
       block = new BlockClass.Block({data: 'Test Block'});
-      block.hash = block.calculateBlockHash()
+      block.calculateBlockHash()
     })
     describe('when block is valid', () => {
       it('returns true', async () =>{
@@ -30,25 +30,24 @@ describe('Block', () => {
       })
     })
     describe('when block data properties have been tampered', () => {
-      it('modifying body returns false', async () => {
+      checkBlockValidatesToFalse = async () => {
+        valid = await block.validate()
+        expect(valid).toBeFalsy()
+      }
+      afterEach(() => {
+        checkBlockValidatesToFalse()
+      })
+      it('modifying body returns false', () => {
         block.body = 'Yay! Ive hacked the block!'.toString('hex')
-        valid = await block.validate()
-        expect(valid).toBeFalsy()
       })
-      it('modifying time returns false', async () => {
+      it('modifying time returns false', () => {
         block.time = 10
-        valid = await block.validate()
-        expect(valid).toBeFalsy()
       })
-      it('modifying height returns false', async () => {
+      it('modifying height returns false', () => {
         block.height = 10
-        valid = await block.validate()
-        expect(valid).toBeFalsy()
       })
-      it('modifying previousBlockHash returns false', async () => {
+      it('modifying previousBlockHash returns false', () => {
         block.previousBlockHash = "somelonghashthatisnotthepreviousblockhash!"
-        valid = await block.validate()
-        expect(valid).toBeFalsy()
       })
     })
   })
