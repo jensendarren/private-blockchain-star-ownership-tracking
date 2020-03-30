@@ -1,5 +1,7 @@
 # Private Blockchain Application
 
+This application is the first Project for the [Blockchain Nanodegree](https://www.udacity.com/course/blockchain-developer-nanodegree--nd1309) with __Udacity__. Enjoy and feel free to comment!
+
 ## Run the application
 
 Clone this repo to your local computer and proceed with the following steps.
@@ -13,13 +15,13 @@ npm install
 **Run Jest tests**
 
 ```
-npm run test
+npm test
 ```
 
 **Start the application**
 
 ```
-npm run start
+npm start
 ```
 
 ## Testing using POSTMAN
