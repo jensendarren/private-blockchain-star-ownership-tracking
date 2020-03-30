@@ -24,6 +24,16 @@ npm test
 npm start
 ```
 
+## Development
+
+If you want to make changes to the code, I recommend following Test Driven Development and start up Jest in watch mode as follows:
+
+```
+npm run test-watch
+```
+
+Now start to make changes to the tests and the application code and watch the tests run!
+
 ## Testing using POSTMAN
 
 Below are the results of testing using POSTMAN
