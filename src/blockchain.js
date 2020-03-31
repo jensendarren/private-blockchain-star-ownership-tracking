@@ -226,8 +226,8 @@ class Blockchain {
                 if(block.height > 0 && (block.previousBlockHash != this.chain[prevBlockHeight].hash)) {
                     errorLog.push(`Block ${block.height} does not link to Block ${prevBlockHeight}.`)
                 }
-                resolve(errorLog)
             })
+            resolve(errorLog)
         });
     }
 }

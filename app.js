@@ -28,10 +28,7 @@ class ApplicationServer {
 		//Method that initialized the controllers where you defined the endpoints
 		this.initControllers();
 		// Method that run the express application.
-
-		// Moved the start functionality to start.js to enable testing
-		// using jest and supertest frameworks (https://zellwk.com/blog/endpoint-testing/)
-		// this.start();
+		this.start();
 	}
 
 	initExpress() {
@@ -48,6 +45,12 @@ class ApplicationServer {
   	require("./BlockchainController.js")(this.app, this.blockchain);
 	}
 
+	start() {
+		let self = this;
+		this.app.listen(this.app.get("port"), () => {
+				console.log(`Server Listening for port: ${self.app.get("port")}`);
+		});
+	}
 }
 
 module.exports = new ApplicationServer();
