@@ -28,7 +28,9 @@ class ApplicationServer {
 		//Method that initialized the controllers where you defined the endpoints
 		this.initControllers();
 		// Method that run the express application.
-		this.start();
+		// NOTE: leave this commented out and use `npm run start` to start the app
+		// This is so that the jest specs will run and exit without hanging
+		// this.start();
 	}
 
 	initExpress() {
