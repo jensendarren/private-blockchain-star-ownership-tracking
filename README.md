@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jensendarren/private-blockchain-star-ownership-tracking.svg?branch=master)](https://travis-ci.org/jensendarren/private-blockchain-star-ownership-tracking)
 
-This application is the first Project for the [Blockchain Nanodegree](https://www.udacity.com/course/blockchain-developer-nanodegree--nd1309) with __Udacity__. Enjoy and feel free to comment!
+This is a Node JS application that simulates a basic blockchain protocol.
 
 ## Run the application
 
